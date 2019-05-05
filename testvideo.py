@@ -73,10 +73,7 @@ def predict_img(img,net,thresd = 0.995):
 
 def video():
     net = MobileNetV2(num_classes=2)
-
-    if device == 'cuda':
-        net = torch.nn.DataParallel(net)
-
+    net = torch.nn.DataParallel(net)
     net = net.to(device)
     net = loadmodel(net)
 
@@ -85,15 +82,21 @@ def video():
 
         ret, frame = cap.read()
         #frame = cv2.imread('image/29.png')
+
+        h = frame.shape[0]
+        w = frame.shape[1]
+        frame = frame[0:h, int((w - h) / 2):int((w + h) / 2)]
+
         cv2.imshow('tst', frame)
 
         frame = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
+
         frame = Image.fromarray(frame)
         #frame = Image.open('image/1.jpg').convert('RGB')
         #frame.show('dd')
-        person, pre = predict_img(frame,net,thresd=0.9)
+        person, pre = predict_img(frame,net,thresd=0.8)
         if person == 1:
-            print('  ')
+            print('==============================')
         else:
             print('no person : %0.5f '%pre)
 

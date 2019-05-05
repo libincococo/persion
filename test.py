@@ -78,15 +78,13 @@ def evalpath():
     root = "image"
     files = os.listdir(root)
     net = MobileNetV2(num_classes=2)
-
-    if device == 'cuda':
-        net = torch.nn.DataParallel(net)
+    net = torch.nn.DataParallel(net)
 
     net = net.to(device)
     net = loadmodel(net)
     n_person = 0
     for step, file in enumerate(files):
-        if predict(os.path.join(root,file),net,thresd=0.0) == 1:
+        if predict(os.path.join(root,file),net,thresd=0.8) == 1:
             n_person = n_person+1
     print('acc is :',float(n_person)/float(step),' total num is :',step)
 
